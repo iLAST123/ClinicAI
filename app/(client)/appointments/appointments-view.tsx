@@ -44,9 +44,8 @@ import {
 } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { mockAppointments } from "@/lib/mock/appointments"
-import { buildReminderJobs } from "@/lib/notifications/jobs"
 import { formatDate } from "@/lib/format"
-import type { Appointment, CommunicationEvent } from "@/types"
+import type { Appointment } from "@/types"
 
 const statusLabels: Record<Appointment["status"], string> = {
   scheduled: "Agendado",
@@ -74,9 +73,14 @@ const sourceLabels: Record<Appointment["source"], string> = {
   whatsapp: "WhatsApp",
 }
 
+function buildTimeline(status: Appointment["status"]) {
+  if (status === "confirmed" || status === "completed") return "enviado → entregue → respondido"
+  if (status === "scheduled") return "enviado → entregue"
+  return "enviado"
+}
+
 export function AppointmentsView() {
   const [items, setItems] = useState<Appointment[]>(mockAppointments)
-  const [timeline, setTimeline] = useState<CommunicationEvent[]>([])
 
   function updateStatus(id: string, status: Appointment["status"]) {
     setItems((prev) =>
@@ -89,15 +93,7 @@ export function AppointmentsView() {
     <>
       <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
         <ImportCsvDialog />
-        <CreateAppointmentDialog onCreate={(appointment) => {
-          setItems((prev) => [appointment, ...prev])
-          buildReminderJobs(appointment)
-          const now = new Date().toISOString()
-          setTimeline((prev) => [...prev,
-            { id: crypto.randomUUID(), appointment_id: appointment.id, event_type: "enviado", channel: "whatsapp", content: "Lembretes 48h e 24h agendados", created_at: now },
-            { id: crypto.randomUUID(), appointment_id: appointment.id, event_type: "entregue", channel: "whatsapp", content: "Fila de envio criada", created_at: now },
-          ])
-        }} />
+        <CreateAppointmentDialog />
       </div>
 
       <Card>
@@ -138,7 +134,9 @@ export function AppointmentsView() {
                       {statusLabels[a.status]}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{timeline.filter((t) => t.appointment_id === a.id).slice(-2).map((t) => t.event_type).join(" → ") || "Sem eventos"}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">
+                    {buildTimeline(a.status)}
+                  </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -153,15 +151,7 @@ export function AppointmentsView() {
                           (s) => (
                             <DropdownMenuItem
                               key={s}
-                              onClick={() => {
-                                updateStatus(a.id, s)
-                                if (s === "confirmed") {
-                                  const now = new Date().toISOString()
-                                  setTimeline((prev) => [...prev,
-                                    { id: crypto.randomUUID(), appointment_id: a.id, event_type: "respondido", channel: "whatsapp", content: "Paciente respondeu CONFIRMAR", created_at: now },
-                                  ])
-                                }
-                              }}
+                              onClick={() => updateStatus(a.id, s)}
                             >
                               {statusLabels[s]}
                             </DropdownMenuItem>
@@ -180,7 +170,7 @@ export function AppointmentsView() {
   )
 }
 
-function CreateAppointmentDialog({ onCreate }: { onCreate: (a: Appointment) => void }) {
+function CreateAppointmentDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -201,33 +191,17 @@ function CreateAppointmentDialog({ onCreate }: { onCreate: (a: Appointment) => v
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault()
-            const form = new FormData(e.currentTarget)
-            const appointment: Appointment = {
-              id: crypto.randomUUID(),
-              clinic_id: "mock-clinic",
-              lead_id: null,
-              campaign_id: String(form.get("campaign") || "") || null,
-              campaign_name: null,
-              patient_name: String(form.get("patient") || ""),
-              procedure: String(form.get("procedure") || ""),
-              appointment_date: String(form.get("date") || ""),
-              status: "scheduled",
-              source: "whatsapp",
-              notes: String(form.get("notes") || ""),
-              created_at: new Date().toISOString(),
-            }
-            onCreate(appointment)
             toast.success("Agendamento criado (mock)")
           }}
         >
           <div className="space-y-2">
             <Label htmlFor="patient">Nome do paciente</Label>
-            <Input id="patient" name="patient" placeholder="Maria Silva" />
+            <Input id="patient" placeholder="Maria Silva" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date">Data</Label>
-              <Input id="date" name="date" type="date" />
+              <Input id="date" type="date" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
@@ -249,15 +223,15 @@ function CreateAppointmentDialog({ onCreate }: { onCreate: (a: Appointment) => v
           </div>
           <div className="space-y-2">
             <Label htmlFor="procedure">Procedimento</Label>
-            <Input id="procedure" name="procedure" placeholder="Avaliação, Botox, etc." />
+            <Input id="procedure" placeholder="Avaliação, Botox, etc." />
           </div>
           <div className="space-y-2">
             <Label htmlFor="campaign">Campanha de origem (opcional)</Label>
-            <Input id="campaign" name="campaign" placeholder="ID ou nome da campanha do Meta" />
+            <Input id="campaign" placeholder="ID ou nome da campanha do Meta" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="notes">Observações</Label>
-            <Textarea id="notes" name="notes" rows={2} />
+            <Textarea id="notes" rows={2} />
           </div>
           <DialogFooter>
             <DialogClose asChild>
