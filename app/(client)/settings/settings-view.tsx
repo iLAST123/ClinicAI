@@ -45,6 +45,7 @@ export function SettingsView() {
         <TabsTrigger value="clinic">Clínica</TabsTrigger>
         <TabsTrigger value="subscription">Assinatura</TabsTrigger>
         <TabsTrigger value="connections">Conexões</TabsTrigger>
+        <TabsTrigger value="security">Segurança</TabsTrigger>
       </TabsList>
 
       <TabsContent value="clinic" className="space-y-4">
@@ -185,6 +186,33 @@ export function SettingsView() {
           </CardContent>
         </Card>
       </TabsContent>
+
+      <TabsContent value="security" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">LGPD e Controle de Acesso</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <p className="text-muted-foreground">
+              Defina perfis com permissão granular e mantenha trilha de auditoria para dados sensíveis.
+            </p>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+              <li>Administrador: acesso completo.</li>
+              <li>Médico/Enfermagem: prontuário e evolução clínica.</li>
+              <li>Recepção: agenda e cadastro de pacientes.</li>
+              <li>Financeiro: faturamento e recebimentos.</li>
+            </ul>
+            <div className="rounded-md border bg-muted/30 p-3">
+              <p><strong>Auditoria:</strong> 14 acessos a prontuário registrados hoje.</p>
+              <p><strong>Consentimento LGPD:</strong> 92% dos pacientes com termo ativo.</p>
+            </div>
+            <Button onClick={() => toast.success("Configuração de roles salva (mock)")}>
+              Salvar políticas de acesso
+            </Button>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
     </Tabs>
   )
 }
