@@ -44,6 +44,9 @@ export interface OnboardingData {
   monthly_budget?: string
   current_challenges?: string
   form_campaign_map?: { form_id: string; campaign_id: string }[]
+  calendar_provider?: "google" | "microsoft_graph"
+  calendar_professional_email?: string
+  calendar_connected?: boolean
 }
 
 export interface MetaConnection {
@@ -88,6 +91,9 @@ export interface Appointment {
     | "cancelled"
   source: "manual" | "csv_import" | "crm_webhook" | "whatsapp"
   notes: string | null
+  professional_id?: string | null
+  external_event_id?: string | null
+  sync_status?: "synced" | "pending" | "error"
   created_at: string
 }
 

@@ -14,6 +14,9 @@ export const mockAppointments: Appointment[] = [
     status: "confirmed",
     source: "manual",
     notes: "Primeira avaliação. Já enviou fotos.",
+    professional_id: "prof-ana",
+    external_event_id: "google-a-1",
+    sync_status: "synced",
     created_at: "2026-05-02T09:30:00Z",
   },
   {
@@ -28,6 +31,9 @@ export const mockAppointments: Appointment[] = [
     status: "completed",
     source: "csv_import",
     notes: null,
+    professional_id: "prof-ana",
+    external_event_id: "ms-a-2",
+    sync_status: "synced",
     created_at: "2026-04-28T14:20:00Z",
   },
   {
@@ -42,6 +48,8 @@ export const mockAppointments: Appointment[] = [
     status: "scheduled",
     source: "manual",
     notes: "Pediu orçamento por escrito.",
+    professional_id: "prof-bruno",
+    sync_status: "pending",
     created_at: "2026-05-01T10:05:00Z",
   },
   {

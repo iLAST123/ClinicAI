@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { CalendarPlus, FileUp, MoreHorizontal } from "lucide-react"
+import { CalendarPlus, CheckCircle2, FileUp, MoreHorizontal, RefreshCcw, TriangleAlert } from "lucide-react"
 import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
@@ -101,6 +101,7 @@ export function AppointmentsView() {
                 <TableHead>Campanha</TableHead>
                 <TableHead>Origem</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Sync calendário</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -126,6 +127,9 @@ export function AppointmentsView() {
                     <Badge variant={statusVariant[a.status]}>
                       {statusLabels[a.status]}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <SyncBadge status={a.sync_status} externalEventId={a.external_event_id} />
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -286,4 +290,12 @@ data_agendamento,procedimento,status,campanha_id,nome_paciente,observacoes
       </DialogContent>
     </Dialog>
   )
+}
+
+
+function SyncBadge({ status, externalEventId }: { status?: Appointment["sync_status"]; externalEventId?: string | null }) {
+  if (!status) return <Badge variant="muted">Não sincronizado</Badge>
+  if (status === "synced") return <Badge variant="success"><CheckCircle2 className="mr-1 h-3.5 w-3.5" />Sincronizado</Badge>
+  if (status === "pending") return <Badge variant="warning"><RefreshCcw className="mr-1 h-3.5 w-3.5" />Pendente</Badge>
+  return <Badge variant="destructive"><TriangleAlert className="mr-1 h-3.5 w-3.5" />Erro{externalEventId ? ` (${externalEventId})` : ""}</Badge>
 }
