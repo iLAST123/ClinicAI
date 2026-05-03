@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, ArrowRight, Check } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Link2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -223,6 +223,18 @@ export function OnboardingWizard() {
               onChange={(v) => update("response_time", v)}
               placeholder="Em até 1h no horário comercial"
             />
+            <div className="rounded-md border bg-muted/40 p-4 text-sm">
+              <p className="font-medium">Conexão de calendário por profissional (OAuth)</p>
+              <p className="mt-1 text-muted-foreground">Você pode conectar Google Calendar ou Microsoft Graph por dentista para sincronizar automaticamente agendamentos.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => toast.success("OAuth Google iniciado (mock)")}>
+                  <Link2 className="mr-2 h-4 w-4" />Conectar Google
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => toast.success("OAuth Microsoft iniciado (mock)")}>
+                  <Link2 className="mr-2 h-4 w-4" />Conectar Microsoft
+                </Button>
+              </div>
+            </div>
           </OnboardingStep>
         )}
 

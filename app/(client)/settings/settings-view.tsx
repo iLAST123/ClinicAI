@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { CheckCircle2, ExternalLink } from "lucide-react"
+import { CheckCircle2, ExternalLink, Link2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
@@ -24,6 +24,12 @@ import {
 import { formatDateLong } from "@/lib/format"
 import type { SubscriptionPlan } from "@/types"
 
+
+
+const professionals = [
+  { id: "prof-ana", name: "Dra. Ana", calendar: "Google" },
+  { id: "prof-bruno", name: "Dr. Bruno", calendar: "Microsoft" },
+]
 const planLabels: Record<SubscriptionPlan, string> = {
   solo: "Solo — R$ 597/mês",
   managed: "Managed — R$ 1.997/mês",
@@ -127,6 +133,35 @@ export function SettingsView() {
       </TabsContent>
 
       <TabsContent value="connections" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Integração de calendário (OAuth)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            {professionals.map((professional) => (
+              <div key={professional.id} className="rounded-md border p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{professional.name}</p>
+                    <p className="text-xs text-muted-foreground">Profissional: {professional.id}</p>
+                  </div>
+                  <Badge variant="secondary">{professional.calendar}</Badge>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" onClick={() => toast.success(`OAuth Google iniciado para ${professional.name} (mock)`) }>
+                    <Link2 className="mr-2 h-4 w-4" />
+                    Conectar Google
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => toast.success(`OAuth Microsoft iniciado para ${professional.name} (mock)`) }>
+                    <Link2 className="mr-2 h-4 w-4" />
+                    Conectar Microsoft
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Meta Ads</CardTitle>
