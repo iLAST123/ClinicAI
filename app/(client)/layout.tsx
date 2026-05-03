@@ -6,7 +6,7 @@ const items: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "dashboard" },
   { label: "Agenda", href: "/appointments", icon: "appointments" },
   { label: "Pacientes", href: "/leads", icon: "patients" },
-  { label: "Financeiro", href: "/pricing", icon: "finance" },
+  { label: "Financeiro", href: "/finance", icon: "finance" },
   { label: "Relatórios", href: "/reports", icon: "reports" },
   { label: "Decisões", href: "/decisions", icon: "decisions" },
   { label: "Conexões", href: "/connect", icon: "connect" },
