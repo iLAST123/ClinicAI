@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist"
 
 import { CampaignTable } from "@/components/dashboard/CampaignTable"
 import { ConnectionBanner } from "@/components/dashboard/ConnectionBanner"
@@ -103,10 +104,17 @@ export default function DashboardPage() {
         <CampaignTable campaigns={mockCampaigns} />
       </section>
 
-      <section className="rounded-lg border bg-muted/30 p-4 text-xs text-muted-foreground">
+      <section className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 rounded-lg border bg-muted/30 p-4 text-xs text-muted-foreground">
         Investido no período: <strong>{formatBRL(mockMetrics.total_spend)}</strong>{" "}
         · Melhor campanha: <strong>{mockMetrics.best_campaign}</strong> · Variação
         do CPL: <strong>{formatPercent(mockMetrics.week_over_week_cpl_change)}</strong>
+        </div>
+        <OnboardingChecklist />
+      </section>
+
+      <section className="rounded-lg border bg-muted/20 p-4 text-xs text-muted-foreground">
+        Dica: ative lembretes 48h/24h e sincronização de calendário para reduzir no-show.
       </section>
     </div>
   )

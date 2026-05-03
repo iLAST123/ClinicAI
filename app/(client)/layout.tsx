@@ -4,10 +4,12 @@ import { mockClinic } from "@/lib/mock/clinic"
 
 const items: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "dashboard" },
-  { label: "Leads", href: "/leads", icon: "leads" },
-  { label: "Agendamentos", href: "/appointments", icon: "appointments" },
+  { label: "Agenda", href: "/appointments", icon: "appointments" },
+  { label: "Pacientes", href: "/leads", icon: "patients" },
+  { label: "Financeiro", href: "/finance", icon: "finance" },
+  { label: "Relatórios", href: "/reports", icon: "reports" },
   { label: "Decisões", href: "/decisions", icon: "decisions" },
-  { label: "Conectar Anúncios", href: "/connect", icon: "connect" },
+  { label: "Conexões", href: "/connect", icon: "connect" },
   { label: "Configurações", href: "/settings", icon: "settings" },
 ]
 

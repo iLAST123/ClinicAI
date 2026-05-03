@@ -4,6 +4,8 @@ import {
   Lightbulb,
   Plug,
   Settings,
+  ShieldCheck,
+  BarChart3,
   Users,
   type LucideIcon,
 } from "lucide-react"
@@ -15,6 +17,10 @@ export type IconKey =
   | "decisions"
   | "connect"
   | "settings"
+  | "reports"
+  | "patients"
+  | "finance"
+  | "security"
   | "clients"
 
 export const navIcons: Record<IconKey, LucideIcon> = {
@@ -24,5 +30,9 @@ export const navIcons: Record<IconKey, LucideIcon> = {
   decisions: Lightbulb,
   connect: Plug,
   settings: Settings,
+  reports: BarChart3,
+  patients: Users,
+  finance: BarChart3,
+  security: ShieldCheck,
   clients: Users,
 }
