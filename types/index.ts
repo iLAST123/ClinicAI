@@ -154,3 +154,23 @@ export interface AdminClientRow {
   meta_status: MetaConnection["status"]
   last_decision_date: string | null
 }
+
+export interface ReminderNotification {
+  id: string
+  appointment_id: string
+  channel: "whatsapp" | "sms"
+  scheduled_for: string
+  status: "queued" | "sent" | "delivered" | "failed" | "responded" | "cancelled"
+  provider_message_id: string | null
+  response: "CONFIRMAR" | "CANCELAR" | "REMARCAR" | null
+  created_at: string
+}
+
+export interface CommunicationEvent {
+  id: string
+  appointment_id: string
+  event_type: "enviado" | "entregue" | "respondido"
+  channel: "whatsapp" | "sms"
+  content: string | null
+  created_at: string
+}
