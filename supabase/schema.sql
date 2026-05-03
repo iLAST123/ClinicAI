@@ -132,6 +132,40 @@ create table public.appointments (
 create index appointments_clinic_date
   on public.appointments (clinic_id, appointment_date desc);
 
+
+-- ============================================================================
+-- LEMBRETES E COMUNICAÇÃO
+-- ============================================================================
+create table public.reminder_notifications (
+  id uuid default gen_random_uuid() primary key,
+  appointment_id uuid references public.appointments(id) on delete cascade not null,
+  channel text not null check (channel in ('whatsapp', 'sms')),
+  scheduled_for timestamp with time zone not null,
+  status text not null check (status in ('queued', 'sent', 'delivered', 'failed', 'responded', 'cancelled')),
+  provider_message_id text,
+  response text,
+  created_at timestamp with time zone default now()
+);
+
+create table public.communication_events (
+  id uuid default gen_random_uuid() primary key,
+  appointment_id uuid references public.appointments(id) on delete cascade not null,
+  event_type text not null check (event_type in ('enviado', 'entregue', 'respondido')),
+  channel text not null check (channel in ('whatsapp', 'sms')),
+  content text,
+  created_at timestamp with time zone default now()
+);
+
+create table public.message_templates (
+  id uuid default gen_random_uuid() primary key,
+  clinic_id uuid references public.clinics(id) on delete cascade not null,
+  channel text not null check (channel in ('whatsapp', 'sms')),
+  template_key text not null,
+  content text not null,
+  created_at timestamp with time zone default now(),
+  unique (clinic_id, channel, template_key)
+);
+
 -- ============================================================================
 -- DECISÕES DA SEMANA
 -- ============================================================================
@@ -175,6 +209,9 @@ alter table public.subscriptions enable row level security;
 alter table public.appointments enable row level security;
 alter table public.leads enable row level security;
 alter table public.form_campaign_map enable row level security;
+alter table public.reminder_notifications enable row level security;
+alter table public.communication_events enable row level security;
+alter table public.message_templates enable row level security;
 
 create policy "client_own_clinic" on public.clinics
   for all using (auth.uid() = user_id);
@@ -216,3 +253,19 @@ create policy "client_own_subscriptions" on public.subscriptions
 
 -- O service role key (usado em API Routes) ignora RLS automaticamente,
 -- então o painel admin acessa tudo sem policy adicional.
+
+
+create policy "client_own_reminders" on public.reminder_notifications
+  for all using (
+    appointment_id in (select id from public.appointments where clinic_id in (select id from public.clinics where user_id = auth.uid()))
+  );
+
+create policy "client_own_communication_events" on public.communication_events
+  for all using (
+    appointment_id in (select id from public.appointments where clinic_id in (select id from public.clinics where user_id = auth.uid()))
+  );
+
+create policy "client_own_message_templates" on public.message_templates
+  for all using (
+    clinic_id in (select id from public.clinics where user_id = auth.uid())
+  );
