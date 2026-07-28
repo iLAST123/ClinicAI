@@ -1,17 +1,29 @@
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import type { Metadata, Viewport } from "next"
 import "./globals.css"
+import { SwRegister } from "@/components/pwa/sw-register"
 import { Toaster } from "@/components/ui/sonner"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
 export const metadata: Metadata = {
-  title: "ClinicAI — O CMO de dados da sua clínica",
+  title: "Meu Bolso — Controle financeiro pessoal",
   description:
-    "Conecte seu Meta Ads e receba toda segunda a Decisão da Semana: 3 números + 1 ação clara baseada nos dados reais da sua clínica.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
-  ),
+    "App pessoal de controle financeiro. Seus dados ficam apenas no seu aparelho.",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Meu Bolso",
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#4C5AFF",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 }
 
 export default function RootLayout({
@@ -19,9 +31,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         {children}
-        <Toaster />
+        <Toaster position="top-center" />
+        <SwRegister />
       </body>
     </html>
   )
